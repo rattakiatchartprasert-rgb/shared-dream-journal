@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌙 Shared Dream Journal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- TailwindCSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            soft: '0 10px 25px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Simple focus trap hint; full trap not implemented for brevity */
+    .modal-open { overflow: hidden; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="max-w-3xl mx-auto px-4 py-8">
+    <header class="flex items-center gap-3 mb-6">
+      <div class="text-3xl">🌙</div>
+      <h1 class="text-3xl font-bold tracking-tight">Shared Dream Journal</h1>
+    </header>
+
+    <!-- Create -->
+    <section class="mb-6">
+      <form id="dreamForm" class="grid gap-3 bg-white rounded-2xl shadow-soft p-4">
+        <input id="title" placeholder="Dream title" required class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <textarea id="content" placeholder="Write your dream..." required class="w-full min-h-[110px] rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 active:scale-[.99]">Save Dream</button>
+          <button type="button" class="rounded-xl border border-slate-300 bg-white px-4 py-2" id="refreshBtn">Refresh</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Toolbar -->
+    <section class="mb-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <input id="searchInput" placeholder="Search keyword…" class="flex-1 min-w-[180px] rounded-xl border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <select id="sortSelect" class="min-w-[140px] rounded-xl border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">— Sort —</option>
+          <option value="latest">Latest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+        <select id="limitSelect" title="Items per page" class="min-w-[120px] rounded-xl border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="5">5 / page</option>
+          <option value="10" selected>10 / page</option>
+          <option value="20">20 / page</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Pager -->
+    <section class="mb-4">
+      <div class="flex items-center gap-2">
+        <button id="prevBtn" class="rounded-xl border border-slate-300 bg-white px-3 py-2 disabled:opacity-40">Prev</button>
+        <span id="pageInfo" class="text-sm text-slate-500">Page 1</span>
+        <button id="nextBtn" class="rounded-xl border border-slate-300 bg-white px-3 py-2 disabled:opacity-40">Next</button>
+      </div>
+    </section>
+
+    <!-- List -->
+    <section>
+      <ul id="dreamList" class="space-y-3">
+        <li class="text-slate-500">No dreams yet. Add one above 👆</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toastWrap" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
+
+  <!-- Modals -->
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 z-40">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative mx-auto mt-16 w-[92%] max-w-lg">
+      <div class="bg-white rounded-2xl shadow-soft p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-semibold">Edit Dream</h3>
+          <button class="p-1 rounded-lg hover:bg-slate-100" data-x="closeEdit" aria-label="Close">✕</button>
+        </div>
+        <div class="grid gap-3">
+          <input id="editTitle" class="w-full rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <textarea id="editContent" class="w-full min-h-[120px] rounded-xl border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+        <div class="mt-4 flex justify-end gap-2">
+          <button class="rounded-xl border border-slate-300 bg-white px-4 py-2" data-x="closeEdit">Cancel</button>
+          <button class="rounded-xl bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700" id="saveEditBtn">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div id="deleteModal" class="hidden fixed inset-0 z-40">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative mx-auto mt-24 w-[92%] max-w-md">
+      <div class="bg-white rounded-2xl shadow-soft p-6">
+        <h3 class="text-lg font-semibold">Delete this dream?</h3>
+        <p class="text-slate-600 mt-1">This action cannot be undone.</p>
+        <div class="mt-4 flex justify-end gap-2">
+          <button class="rounded-xl border border-slate-300 bg-white px-4 py-2" data-x="closeDelete">Cancel</button>
+          <button class="rounded-xl bg-rose-600 text-white px-4 py-2 hover:bg-rose-700" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Utils ----------
+    const API = "http://localhost:3000/dreams";
+    const $ = (s, el=document) => el.querySelector(s);
+
+    function escapeHTML(str="") {
+      return String(str)
+        .replaceAll('&','&amp;').replaceAll('<','&lt;')
+        .replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;");
+    }
+    function highlight(text, kw) {
+      if (!kw) return escapeHTML(text);
+      const escKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const safe = escapeHTML(text);
+      return safe.replace(new RegExp(escKw, 'ig'), m => `<mark class="bg-amber-200">${m}</mark>`);
+    }
+    function formatDate(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      return isNaN(d) ? "" : d.toLocaleString();
+    }
+    function showToast(msg, type='ok') {
+      const wrap = $('#toastWrap');
+      const el = document.createElement('div');
+      el.className = `rounded-xl px-4 py-2 shadow-soft text-sm ${type==='ok' ? 'bg-emerald-600 text-white' : type==='warn' ? 'bg-amber-500 text-white' : 'bg-rose-600 text-white'}`;
+      el.textContent = msg;
+      wrap.appendChild(el);
+      setTimeout(() => {
+        el.classList.add('opacity-0','transition');
+        setTimeout(()=> el.remove(), 200);
+      }, 1800);
+    }
+
+    // ---------- State ----------
+    const searchInput = $("#searchInput");
+    const sortSelect  = $("#sortSelect");
+    const limitSelect = $("#limitSelect");
+    const prevBtn     = $("#prevBtn");
+    const nextBtn     = $("#nextBtn");
+    const pageInfo    = $("#pageInfo");
+
+    let state = { page: 1, limit: 10, keyword: "", sort: "" };
+
+    // ---------- Modal helpers ----------
+    const editModal = $('#editModal');
+    const deleteModal = $('#deleteModal');
+    let currentEditId = null;
+    let currentDeleteId = null;
+
+    function openModal(modal) {
+      modal.classList.remove('hidden');
+      document.documentElement.classList.add('modal-open');
+    }
+    function closeModal(modal) {
+      modal.classList.add('hidden');
+      document.documentElement.classList.remove('modal-open');
+    }
+
+    // Close on ESC and backdrop
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') { closeModal(editModal); closeModal(deleteModal); }
+    });
+    editModal.addEventListener('click', (e)=>{ if(e.target === editModal.firstElementChild) closeModal(editModal); });
+    deleteModal.addEventListener('click', (e)=>{ if(e.target === deleteModal.firstElementChild) closeModal(deleteModal); });
+
+    // ---------- Rendering ----------
+    function renderItem(d) {
+      const li = document.createElement("li");
+      li.className = "bg-white rounded-2xl shadow-soft p-4";
+      const when = formatDate(d.updatedAt || d.timestamp);
+      const kw = state.keyword || "";
+
+      li.innerHTML = `
+        <div class="flex flex-col gap-1">
+          <div class="flex items-start justify-between gap-2">
+            <div class="font-semibold text-slate-900">${highlight(d.title, kw)}</div>
+            <div class="text-xs text-slate-500 whitespace-nowrap">${when ? when : ''}</div>
+          </div>
+          <div class="text-slate-700">${highlight(d.content, kw)}</div>
+          <div class="mt-2 flex items-center gap-2">
+            <button class="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm" data-id="${d.id}" data-act="edit">Edit</button>
+            <button class="rounded-xl bg-rose-600 text-white px-3 py-1.5 text-sm" data-id="${d.id}" data-act="delete">Delete</button>
+          </div>
+        </div>`;
+
+      // Action wiring via event delegation below
+      return li;
+    }
+
+    async function loadDreams() {
+      const params = new URLSearchParams({
+        page: String(state.page),
+        limit: String(state.limit),
+        ...(state.keyword ? { keyword: state.keyword } : {}),
+        ...(state.sort ? { sort: state.sort } : {})
+      });
+
+      const res = await fetch(`${API}?${params.toString()}`);
+      const data = await res.json();
+
+      const list = $("#dreamList");
+      list.innerHTML = "";
+
+      if (!data.dreams || data.dreams.length === 0) {
+        const li = document.createElement("li");
+        li.className = "text-slate-500";
+        li.textContent = state.keyword ? "No results for your search." : "No dreams yet. Add one above 👆";
+        list.appendChild(li);
+      } else {
+        data.dreams.forEach(d => list.appendChild(renderItem(d)));
+      }
+
+      // Pager
+      const totalPages = Math.max(1, Math.ceil(data.total / data.limit));
+      pageInfo.textContent = `Page ${data.page} / ${totalPages}`;
+      prevBtn.disabled = data.page <= 1;
+      nextBtn.disabled = data.page >= totalPages;
+    }
+
+    // ---------- Actions ----------
+    // Create
+    $("#dreamForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = $("#title").value.trim();
+      const content = $("#content").value.trim();
+      if (!title || !content) return;
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content })
+      });
+      if (res.ok) {
+        e.target.reset();
+        state.page = 1;
+        sortSelect.value = "latest";
+        state.sort = "latest";
+        showToast('Saved successfully');
+        loadDreams();
+      } else {
+        showToast('Save failed', 'err');
+      }
+    });
+
+    // Refresh
+    $("#refreshBtn").addEventListener("click", loadDreams);
+
+    // Controls -> state
+    searchInput.addEventListener("input", () => {
+      state.keyword = searchInput.value.trim();
+      state.page = 1;
+      clearTimeout(searchInput._t);
+      searchInput._t = setTimeout(loadDreams, 250);
+    });
+
+    sortSelect.addEventListener("change", () => {
+      state.sort = sortSelect.value;
+      state.page = 1;
+      loadDreams();
+    });
+
+    limitSelect.addEventListener("change", () => {
+      state.limit = parseInt(limitSelect.value, 10) || 10;
+      state.page = 1;
+      loadDreams();
+    });
+
+    prevBtn.addEventListener("click", () => { if (state.page > 1) { state.page--; loadDreams(); } });
+    nextBtn.addEventListener("click", () => { state.page++; loadDreams(); });
+
+    // List action delegation (Edit/Delete)
+    $("#dreamList").addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-act]');
+      if (!btn) return;
+      const id = Number(btn.dataset.id);
+      if (btn.dataset.act === 'edit') { beginEdit(id); }
+      if (btn.dataset.act === 'delete') { beginDelete(id); }
+    });
+
+    // ----- Edit Modal flow -----
+    async function beginEdit(id) {
+      currentEditId = id;
+      const d = await (await fetch(`${API}/${id}`)).json();
+      $('#editTitle').value = d.title || '';
+      $('#editContent').value = d.content || '';
+      openModal(editModal);
+      $('#editTitle').focus();
+    }
+
+    document.querySelectorAll('[data-x="closeEdit"]').forEach(el => el.addEventListener('click', ()=> closeModal(editModal)));
+
+    $('#saveEditBtn').addEventListener('click', async ()=>{
+      if (!currentEditId) return;
+      const title = $('#editTitle').value.trim();
+      const content = $('#editContent').value.trim();
+      const res = await fetch(`${API}/${currentEditId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content })
+      });
+      if (res.ok) {
+        closeModal(editModal);
+        showToast('Updated successfully');
+        loadDreams();
+      } else {
+        showToast('Update failed', 'err');
+      }
+    });
+
+    // ----- Delete Modal flow -----
+    function beginDelete(id) {
+      currentDeleteId = id;
+      openModal(deleteModal);
+    }
+
+    document.querySelectorAll('[data-x="closeDelete"]').forEach(el => el.addEventListener('click', ()=> closeModal(deleteModal)));
+
+    $('#confirmDeleteBtn').addEventListener('click', async ()=>{
+      if (!currentDeleteId) return;
+      const res = await fetch(`${API}/${currentDeleteId}`, { method: 'DELETE' });
+      if (res.ok) {
+        // If we deleted the last item on the page, go back a page
+        const listCount = document.querySelectorAll('#dreamList > li').length;
+        if (listCount === 1 && state.page > 1) state.page--;
+        closeModal(deleteModal);
+        showToast('Deleted');
+        loadDreams();
+      } else {
+        showToast('Delete failed', 'err');
+      }
+    });
+
+    // ---------- Init ----------
+    loadDreams();
+  </script>
+</body>
+</html>

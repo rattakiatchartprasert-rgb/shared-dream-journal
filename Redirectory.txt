@@ -1,0 +1,54 @@
+cd ~/Desktop
+cd shared-dream-journal
+
+Shift + Alt + F
+
+รัน node
+node index.js
+
+ขอ Token ใหม่
+ไปที่ botfather -> /revoke
+
+
+2/10/25
+เพิ่ม timestamp → ให้แต่ละฝันมี date อัตโนมัติ
+เพิ่ม tags หรือ mood → เช่น “nightmare”, “lucid”, “funny”
+ทำ frontend เบา ๆ → ใช้ HTML/React ต่อกับ API ที่มึงมีอยู่
+ทำระบบ user → ให้แต่ละคน login แล้วเก็บฝันของใครของมัน
+ลอง deploy → ไปลงที่ Render, Vercel, หรือ Railway ให้เพื่อนลองใช้งานจริง
+
+10/10/25
+- ออก order สูงสุดต่อวันได้ 4 ชุด 
+- ถ้ากำไรไม่ครบ 550$ ออก order ชุดได้ไม่จำกัดจนกว่าจะครบ แต่ห้ามขาดทุนเกิน 600$
+- ขาดทุนต่อวันไม่เกิน 600$
+- ต้องมีไม้ค้างอยู่ 1 ไม้ทุก Order
+- Dynamic ทยอยปิดได้ จาก Order ที่ Big run อยู่
+- ถ้า TP ทุก Order แล้ว ราคากลับมา 50 % ให้ cut ไม้ที่ Big run ทิ้ง
+- ถ้า Order ที่ big run อยู่ กำไรไป 200% แล้ว ให้ เลื่อน SL ขึ้นมาที่จุด 100% ถ้า 300 % SL เลื่อนมาที่ 200% - หลังผ่าน 320 % ให้คิด SL แบบลงมา 30% จากจุดเข้าค่อย cut
+- ถ้ากำไรถึง 550$ ให้หยุด (เว้นแต่ ไม้ที่ Big run อยู่)
+- ถ้ากำไรถูกปิดไปครบแล้ว ไม้ที่ big run อยู่ต้องห้ามปิด เลื่อนมาที่ Break even รอพ้นวัน ถ้าพ้นวันแล้ว กลับไปใช้เงื่อนไขเดิม ถ้าหลุดเงื่อนไขเดิมแล้วให้ปิดทันทีในวันถัดไป กำไรที่ปิด เอามารวมใน 550$ ด้วย
+
+2100959914
+bmw_R1200GS
+
+python bot.py
+python MT5_test.py
+8265430055:AAEZUgwM_3w2rfpHSDJ2mG78gBQU5dCukmk
+
+พิมพ์ผ่าน Telegram คำสั่งสั้น ๆ ✅ (เร็วสุด, dev ง่าย)
+
+รูปแบบที่แนะนำ (single-line, กันงง):
+
+Market:
+M BUY XAUUSD E=2450 SL=2438 TP=2460,2475 RISK=0.5%
+
+Pending:
+P SELL XAUUSD LIMIT=2468 SL=2480 TP=2458,2440 LOT=0.2
+
+Telegram Bot API
+Done! Congratulations on your new bot. You will find it at t.me/vermillions_trader_bot. You can now add a description, about section and profile picture for your bot, see /help for a list of commands. By the way, when you've finished creating your cool bot, ping our Bot Support if you want a better username for it. Just make sure the bot is fully operational before you do this.
+Use this token to access the HTTP API:
+8265430055:AAHbdg0hM9a5xZq-z-V2wMnjynpUrXVSI8I
+Keep your token secure and store it safely, it can be used by anyone to control your bot.
+
+For a description of the Bot API, see this page: https://core.telegram.org/bots/api
