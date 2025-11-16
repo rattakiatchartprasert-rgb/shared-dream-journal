@@ -18,7 +18,7 @@ const MONGO_URI = "mongodb+srv://dreamUser:fBDS8PXBpJY3944k@cluster0.t7remom.mon
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- 3. (เพิ่มใหม่) การเชื่อมต่อ Mongoose ---
 mongoose.connect(MONGO_URI)
