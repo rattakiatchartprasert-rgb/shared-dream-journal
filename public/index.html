@@ -9,7 +9,6 @@
   <body>
     <div class="container">
       <h1>Share Your Dream</h1>
-
       <form id="dream-form">
         <input
           type="text"
@@ -30,21 +29,30 @@
         <h2>Recent Dreams</h2>
       </div>
 
-      <div class="search-bar">
-        <input
-          type="search"
-          id="search-input"
-          placeholder="Search in dreams..."
-        />
+      <div class="controls-wrapper">
+        <div class="search-bar">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search in dreams..."
+          />
+        </div>
+        
+        <div class="sort-controls">
+          <select id="sort-select">
+            <option value="latest">Sort: Latest</option>
+            <option value="oldest">Sort: Oldest</option>
+          </select>
+        </div>
       </div>
 
-      <div id="dream-list">
-        </div>
+      <div id="dream-list"></div>
 
       <div class="pagination-controls">
         <button id="btn-prev" disabled>Previous</button>
         <span id="page-info">Page 1</span>
-        <button id="btn-next">Next</button> </div>
+        <button id="btn-next">Next</button>
+      </div>
     </div>
     <script src="script.js"></script>
 
@@ -64,5 +72,7 @@
         </form>
       </div>
     </div>
-    </body>
+    <div id="toast-container"></div>
+
+  </body>
 </html>

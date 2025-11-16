@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "title": "Flying over the city",
+    "content": "I dreamed I was flying over the city at night. The lights from the buildings were beautiful. Felt so free.",
+    "timestamp": "2025-11-15T21:41:18.038Z",
+    "updatedAt": "2025-11-15T21:41:18.038Z"
+  },
+  {
+    "id": 2,
+    "title": "Secret room in the house",
+    "content": "Dreamed I found a door in my house I'd never seen before. I opened it... it was a library with high ceilings, full of books.",
+    "timestamp": "2025-11-15T21:41:32.025Z",
+    "updatedAt": "2025-11-15T21:41:32.025Z"
+  },
+  {
+    "id": 3,
+    "title": "The talking cat",
+    "content": "Such a weird dream... my cat was wearing a detective hat and turned to me and said, \"Let's go find some mackerel.\"",
+    "timestamp": "2025-11-15T21:41:49.177Z",
+    "updatedAt": "2025-11-15T21:41:49.177Z"
+  },
+  {
+    "id": 4,
+    "title": "Running for the airport",
+    "content": "Dreamed I was late for a flight. I kept running but could never reach the gate, and I forgot my luggage. So chaotic.",
+    "timestamp": "2025-11-15T21:42:05.505Z",
+    "updatedAt": "2025-11-15T21:42:05.505Z"
+  },
+  {
+    "id": 5,
+    "title": "Indigo beach",
+    "content": "Dreamed I was at the beach, but the water was a deep indigo, not blue like normal. The sand was so soft. I was walking alone, felt very peaceful.",
+    "timestamp": "2025-11-15T21:42:14.337Z",
+    "updatedAt": "2025-11-15T21:42:14.337Z"
+  },
+  {
+    "id": 6,
+    "title": "Got a new dog",
+    "content": "Dreamed I got a big, fluffy golden retriever. It ran up and licked my face. I was so happy I almost woke up....",
+    "timestamp": "2025-11-15T21:42:26.377Z",
+    "updatedAt": "2025-11-16T14:17:03.203Z"
+  },
+  {
+    "id": 7,
+    "title": "The debugging code",
+    "content": "Dreamed about the bug I've been stuck on for 3 days... Woke up, vaguely remembered the solution, ran to my computer, and it actually worked!",
+    "timestamp": "2025-11-15T21:42:35.969Z",
+    "updatedAt": "2025-11-15T21:42:35.969Z"
+  }
+]
