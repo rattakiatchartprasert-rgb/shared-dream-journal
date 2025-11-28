@@ -195,3 +195,7 @@ const PORT = process.env.PORT || 3000; // (อัปเดตบรรทัด�
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`); // (อัปเดตบรรทัดนี้)
 });
+// ... (โค้ด app.listen เดิมของคุณ) ...
+
+// (เพิ่มบรรทัดนี้ เพื่อให้ Vercel เรียกใช้ App ได้)
+module.exports = app;
